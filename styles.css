@@ -1,0 +1,350 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg1: #0f172a;
+  --bg2: #1e293b;
+  --panel: rgba(15, 23, 42, 0.75);
+  --panel-strong: rgba(15, 23, 42, 0.9);
+  --text: #e2e8f0;
+  --muted: #cbd5e1;
+  --primary: #f43f5e;
+  --primary-dark: #e11d48;
+  --secondary: #38bdf8;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --card: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.12);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  color: var(--text);
+  background: linear-gradient(135deg, var(--bg1), var(--bg2));
+}
+
+button, input {
+  font: inherit;
+}
+
+.app-container {
+  width: min(1200px, 92vw);
+  margin: 24px auto;
+  padding: 20px 0 50px;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.tab-button {
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.tab-button:hover,
+.tab-button.active {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: rgba(56,189,248,0.5);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.container {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 28px 18px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+  margin: 0 0 10px;
+  font-size: clamp(2rem, 3vw, 3rem);
+}
+
+.subtitle,
+.info-text {
+  color: var(--muted);
+  margin: 0 0 16px;
+}
+
+.wheel-container {
+  position: relative;
+  width: min(82vw, 550px);
+  aspect-ratio: 1;
+  margin: 30px auto;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.35), 0 0 0 8px rgba(255,255,255,0.9);
+  background: white;
+}
+
+.pointer {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 26px solid transparent;
+  border-right: 26px solid transparent;
+  border-top: 60px solid var(--primary);
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.35));
+  z-index: 5;
+}
+
+.spin-btn,
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 800;
+  transition: all 0.2s ease;
+}
+
+.spin-btn {
+  padding: 16px 54px;
+  font-size: 1.4rem;
+  color: white;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  box-shadow: 0 8px 24px rgba(244, 63, 94, 0.35);
+}
+
+.spin-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.spin-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.result {
+  min-height: 48px;
+  margin-top: 24px;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 800;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.35);
+}
+
+.result.winner {
+  animation: celebrate 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes celebrate {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+.admin-container,
+.history-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.admin-section {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px 18px;
+  margin-top: 18px;
+  text-align: left;
+}
+
+.admin-section h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.roster-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.input-field {
+  flex: 1;
+  min-width: 220px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(15, 23, 42, 0.7);
+  color: var(--text);
+  padding: 12px 14px;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  padding: 12px 18px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--secondary), #2563eb);
+  color: white;
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-danger {
+  background: rgba(239, 68, 68, 0.12);
+  color: #fecaca;
+  border: 1px solid rgba(239, 68, 68, 0.45);
+}
+
+.roster-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.roster-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.roster-item span {
+  overflow-wrap: anywhere;
+}
+
+.remove-student-btn {
+  border: none;
+  background: rgba(239, 68, 68, 0.15);
+  color: #fecaca;
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.import-export {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.history-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 18px 12px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  color: var(--muted);
+}
+
+.history-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.history-list {
+  display: grid;
+  gap: 12px;
+  text-align: left;
+}
+
+.history-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.empty-state {
+  color: var(--muted);
+  text-align: center;
+  padding: 26px 12px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.02);
+}
+
+@media (max-width: 600px) {
+  .app-container {
+    width: min(94vw, 700px);
+    padding-top: 14px;
+  }
+
+  .container {
+    padding: 20px 12px;
+    border-radius: 20px;
+  }
+
+  .wheel-container {
+    width: min(90vw, 430px);
+  }
+
+  .spin-btn {
+    width: 100%;
+    max-width: 260px;
+    font-size: 1.2rem;
+  }
+
+  .roster-actions,
+  .import-export,
+  .history-controls {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}
