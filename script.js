@@ -38,6 +38,19 @@ const DEFAULT_ROSTER = [
   'Saif Fires'
 ];
 
+const SUPERHERO_GIFS = [
+  'https://media.giphy.com/media/3o7TKU8JH1XUKxRYG4/giphy.gif',
+  'https://media.giphy.com/media/dWfn7vfQyYmHf2PE1v/giphy.gif',
+  'https://media.giphy.com/media/VnkHz87Vvbg1i/giphy.gif',
+  'https://media.giphy.com/media/26uf1EKA3QlwW7qJa/giphy.gif',
+  'https://media.giphy.com/media/3o6ZsYyYBHeIo5QdS0/giphy.gif',
+  'https://media.giphy.com/media/Qh6NZWsFx1BLP8Btfl/giphy.gif',
+  'https://media.giphy.com/media/g9GnnHWRtz7kc/giphy.gif',
+  'https://media.giphy.com/media/12NlCFUvTokQSc/giphy.gif',
+  'https://media.giphy.com/media/Rj4EN5EUkxIkw/giphy.gif',
+  'https://media.giphy.com/media/tXTuCJtqtPH1m/giphy.gif'
+];
+
 const STORAGE_KEYS = {
   roster: 'class-monitor-roster',
   history: 'class-monitor-history'
@@ -56,9 +69,12 @@ let history = readHistory();
 
 const rosterList = document.getElementById('rosterList');
 const result = document.getElementById('result');
+const resultText = document.getElementById('resultText');
 const spinButton = document.getElementById('spinButton');
 const newStudentInput = document.getElementById('newStudentInput');
 const fileInput = document.getElementById('fileInput');
+const superheroContainer = document.getElementById('superheroContainer');
+const superheroGif = document.getElementById('superheroGif');
 
 function normalizeRoster(list) {
   return [...new Set(list
@@ -94,6 +110,18 @@ function readHistory() {
 
 function saveHistory() {
   localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(history));
+}
+
+function hideSuperheroGif() {
+  if (superheroContainer) {
+    superheroContainer.style.display = 'none';
+  }
+}
+
+function displaySuperheroGif() {
+  if (!superheroContainer || !superheroGif) return;
+  superheroGif.src = SUPERHERO_GIFS[Math.floor(Math.random() * SUPERHERO_GIFS.length)];
+  superheroContainer.style.display = 'flex';
 }
 
 function renderRoster() {
@@ -176,14 +204,16 @@ function clearRoster() {
   names = [];
   saveRoster();
   renderRoster();
-  result.textContent = 'Roster cleared';
+  if (resultText) resultText.textContent = 'Roster cleared';
+  hideSuperheroGif();
 }
 
 function restoreDefaultRoster() {
   names = [...DEFAULT_ROSTER];
   saveRoster();
   renderRoster();
-  result.textContent = 'Default roster restored';
+  if (resultText) resultText.textContent = 'Default roster restored';
+  hideSuperheroGif();
 }
 
 function exportRoster() {
@@ -208,14 +238,15 @@ function importRosterFromCsv(file) {
       .filter(Boolean);
 
     if (imported.length === 0) {
-      result.textContent = 'No names found in CSV';
+      if (resultText) resultText.textContent = 'No names found in CSV';
       return;
     }
 
     names = normalizeRoster(imported);
     saveRoster();
     renderRoster();
-    result.textContent = 'Roster imported successfully';
+    if (resultText) resultText.textContent = 'Roster imported successfully';
+    hideSuperheroGif();
   };
   reader.readAsText(file);
 }
@@ -273,7 +304,8 @@ function spin() {
 
   spinning = true;
   result.classList.remove('winner');
-  result.textContent = '';
+  if (resultText) resultText.textContent = '';
+  hideSuperheroGif();
   spinButton.disabled = true;
 
   const slice = (2 * Math.PI) / names.length;
@@ -304,8 +336,9 @@ function spin() {
     const winnerIndex = Math.floor(normalizedAngle / slice);
     const winner = names[winnerIndex] || names[0];
 
-    result.textContent = `🎉 CLASS MONITOR: ${winner} 🎉`;
+    if (resultText) resultText.textContent = `🎉 CLASS MONITOR: ${winner} 🎉`;
     result.classList.add('winner');
+    displaySuperheroGif();
 
     history.push({ name: winner, timestamp: new Date().toISOString() });
     saveHistory();
