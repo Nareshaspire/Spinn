@@ -4,481 +4,109 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Class Monitor Spinner</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-    }
-
-    .container {
-      text-align: center;
-      width: 100%;
-      max-width: 700px;
-      padding: 25px;
-    }
-
-    h1 {
-      margin-bottom: 5px;
-      font-size: 36px;
-    }
-
-    .subtitle {
-      margin-top: 0;
-      opacity: 0.85;
-    }
-
-    .wheel-container {
-      position: relative;
-      width: 550px;
-      max-width: 90vw;
-      aspect-ratio: 1;
-      margin: 30px auto;
-    }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.35),
-        0 0 0 8px white;
-      background: white;
-    }
-
-    /* Pointer */
-    .pointer {
-      position: absolute;
-      top: -18px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 25px solid transparent;
-      border-right: 25px solid transparent;
-      border-top: 55px solid #ff1744;
-      filter: drop-shadow(0 3px 3px rgba(0,0,0,0.4));
-      z-index: 5;
-    }
-
-    button {
-      padding: 16px 50px;
-      font-size: 22px;
-      font-weight: bold;
-      color: white;
-      background: #ff1744;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      transition: 0.2s;
-    }
-
-    button:hover {
-      transform: scale(1.05);
-      background: #f50057;
-    }
-
-    button:active {
-      transform: scale(0.98);
-    }
-
-    button:disabled {
-      background: #777;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    #result {
-      min-height: 45px;
-      margin-top: 25px;
-      font-size: 28px;
-      font-weight: bold;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    }
-
-    .winner {
-      animation: celebrate 0.6s ease-in-out infinite alternate;
-    }
-
-    @keyframes celebrate {
-      from {
-        transform: scale(1);
-      }
-      to {
-        transform: scale(1.08);
-      }
-    }
-
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 28px;
-      }
-
-      .wheel-container {
-        width: 90vw;
-      }
-
-      button {
-        font-size: 18px;
-        padding: 14px 40px;
-      }
-
-      #result {
-        font-size: 22px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
+  <!-- Main App Container -->
+  <div class="app-container">
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="tab-button active" data-tab="spinner">🎡 Spinner</button>
+      <button class="tab-button" data-tab="admin">⚙️ Admin Panel</button>
+      <button class="tab-button" data-tab="history">📊 History</button>
+    </nav>
 
-  <div class="container">
+    <!-- Spinner Tab -->
+    <div id="spinner" class="tab-content active">
+      <div class="container">
+        <h1>🎡 Class Monitor Spinner</h1>
+        <p class="subtitle">Spin the wheel to select the class monitor!</p>
 
-    <h1>🎡 Class Monitor Spinner</h1>
-    <p class="subtitle">Spin the wheel to select the class monitor!</p>
+        <div class="wheel-container">
+          <div class="pointer"></div>
+          <canvas id="wheel" width="700" height="700"></canvas>
+        </div>
 
-    <div class="wheel-container">
-      <div class="pointer"></div>
-      <canvas id="wheel" width="700" height="700"></canvas>
+        <button id="spinButton" class="spin-btn">🎯 SPIN</button>
+
+        <div id="result" class="result"></div>
+      </div>
     </div>
 
-    <button id="spinButton">🎯 SPIN</button>
+    <!-- Admin Panel Tab -->
+    <div id="admin" class="tab-content">
+      <div class="container admin-container">
+        <h1>⚙️ Admin Panel</h1>
+        
+        <div class="admin-section">
+          <h2>Student Roster</h2>
+          
+          <div class="roster-actions">
+            <input 
+              type="text" 
+              id="newStudentInput" 
+              placeholder="Enter student name..." 
+              class="input-field"
+            >
+            <button id="addStudentBtn" class="btn-primary">+ Add Student</button>
+          </div>
 
-    <div id="result"></div>
+          <div id="rosterList" class="roster-list">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
 
+        <div class="admin-section">
+          <h2>Roster Management</h2>
+          
+          <div class="import-export">
+            <button id="exportBtn" class="btn-secondary">📥 Export Roster (CSV)</button>
+            <button id="importBtn" class="btn-secondary">📤 Import Roster (CSV)</button>
+            <input type="file" id="fileInput" accept=".csv" hidden>
+            <button id="clearRosterBtn" class="btn-danger">🗑️ Clear All</button>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <h2>Default Roster</h2>
+          <p class="info-text">Click to restore the original class roster</p>
+          <button id="restoreDefaultBtn" class="btn-secondary">Restore Default Roster</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Tab -->
+    <div id="history" class="tab-content">
+      <div class="container history-container">
+        <h1>📊 Winner History</h1>
+        
+        <div class="history-stats">
+          <div class="stat-card">
+            <div class="stat-value" id="totalSpins">0</div>
+            <div class="stat-label">Total Spins</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="uniqueWinners">0</div>
+            <div class="stat-label">Unique Winners</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="mostWins">—</div>
+            <div class="stat-label">Most Wins</div>
+          </div>
+        </div>
+
+        <div class="history-controls">
+          <button id="clearHistoryBtn" class="btn-secondary">Clear History</button>
+        </div>
+
+        <div id="historyList" class="history-list">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
   </div>
 
-  <script>
-
-    // ============================================================
-    // CLASS NAMES
-    // ============================================================
-
-    const names = [
-  "Nagendra Sai Achanta",
-  "Sujay Gurrala",
-  "Leekshith Reddy Tippaluru",
-  "Ramanpreet Kaur",
-  "S. Archana K.",
-  "Naresh Aspire",
-  "Charan Karnan",
-  "Suneetha",
-  "Parithosh Kumar",
-  "Sundeep Nagasamudram",
-  "Swathy Cholleti",
-  "Prathyusha Ramanathi",
-  "Akshay Nandagowli",
-  "k45078982",
-  "Saru",
-  "Khizaruddin Khizaruddin",
-  "Charanya Peddi",
-  "N. Govind",
-  "Niha Jakku",
-  "Sai Kumar Ch",
-  "Gola Srikanth",
-  "Prashanthi Sripathi",
-  "D. Jyoti Prem",
-  "Soumyadeep Sinha",
-  "Dr. Sehba Samreen",
-  "Manikanta Kesana",
-  "Archana Chikatmarla",
-  "Niya Glincy",
-  "venk0tv",
-  "Sriram VPM",
-  "Nellutla Jyoti",
-  "Swathi Y. PhD",
-  "CV Krishna",
-  "Umakanth Narayandas",
-  "Hafsa Syeda",
-  "Mohd Ansar",
-  "Saif Fires"
-];
-
-
-
-    // ============================================================
-    // WHEEL SETUP
-    // ============================================================
-
-    const canvas = document.getElementById("wheel");
-    const ctx = canvas.getContext("2d");
-
-    const center = canvas.width / 2;
-    const radius = center - 5;
-
-    const slice = (2 * Math.PI) / names.length;
-
-    let rotation = 0;
-    let spinning = false;
-
-
-    // Different colors for wheel sections
-    const colors = [
-      "#ef4444",
-      "#f97316",
-      "#eab308",
-      "#22c55e",
-      "#06b6d4",
-      "#3b82f6",
-      "#6366f1",
-      "#8b5cf6",
-      "#d946ef",
-      "#ec4899"
-    ];
-
-
-    // ============================================================
-    // DRAW WHEEL
-    // ============================================================
-
-    function drawWheel() {
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      names.forEach((name, i) => {
-
-        const startAngle = rotation + i * slice;
-        const endAngle = startAngle + slice;
-
-        // Draw slice
-        ctx.beginPath();
-
-        ctx.moveTo(center, center);
-
-        ctx.arc(
-          center,
-          center,
-          radius,
-          startAngle,
-          endAngle
-        );
-
-        ctx.closePath();
-
-        ctx.fillStyle = colors[i % colors.length];
-        ctx.fill();
-
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-
-        // --------------------------------------------------------
-        // Draw name
-        // --------------------------------------------------------
-
-        ctx.save();
-
-        ctx.translate(center, center);
-
-        ctx.rotate(startAngle + slice / 2);
-
-        ctx.fillStyle = "#ffffff";
-
-        // Smaller font because there are many names
-        ctx.font = "bold 13px Arial";
-
-        ctx.textAlign = "right";
-        ctx.textBaseline = "middle";
-
-        ctx.fillText(
-          name,
-          radius - 18,
-          0
-        );
-
-        ctx.restore();
-
-      });
-
-
-      // ==========================================================
-      // CENTER CIRCLE
-      // ==========================================================
-
-      ctx.beginPath();
-
-      ctx.arc(
-        center,
-        center,
-        30,
-        0,
-        2 * Math.PI
-      );
-
-      ctx.fillStyle = "#ffffff";
-      ctx.fill();
-
-      ctx.strokeStyle = "#333";
-      ctx.lineWidth = 4;
-      ctx.stroke();
-
-    }
-
-
-    // ============================================================
-    // SPIN FUNCTION
-    // ============================================================
-
-    function spin() {
-
-      if (spinning) return;
-
-      spinning = true;
-
-      const button = document.getElementById("spinButton");
-      const result = document.getElementById("result");
-
-      button.disabled = true;
-
-      result.classList.remove("winner");
-      result.textContent = "";
-
-
-      // ----------------------------------------------------------
-      // Random spin
-      // ----------------------------------------------------------
-
-      const startRotation = rotation;
-
-      // Between 6 and 10 complete rotations
-      const rotations =
-        6 + Math.random() * 4;
-
-      const extraRotation =
-        rotations * 2 * Math.PI;
-
-
-      // Random final angle
-      const randomAngle =
-        Math.random() * 2 * Math.PI;
-
-
-      const targetRotation =
-        startRotation +
-        extraRotation +
-        randomAngle;
-
-
-      const duration = 6000;
-
-      const startTime = performance.now();
-
-
-      // ----------------------------------------------------------
-      // Animation
-      // ----------------------------------------------------------
-
-      function animate(currentTime) {
-
-        const elapsed =
-          currentTime - startTime;
-
-        const progress =
-          Math.min(elapsed / duration, 1);
-
-
-        // Smooth deceleration
-        const easeOut =
-          1 - Math.pow(1 - progress, 5);
-
-
-        rotation =
-          startRotation +
-          (targetRotation - startRotation) *
-          easeOut;
-
-
-        drawWheel();
-
-
-        if (progress < 1) {
-
-          requestAnimationFrame(animate);
-
-        } else {
-
-          rotation =
-            rotation % (2 * Math.PI);
-
-
-          // ======================================================
-          // FIND WINNER
-          // ======================================================
-
-          // Pointer is at the top of the wheel.
-          const pointerAngle =
-            (3 * Math.PI / 2 - rotation) %
-            (2 * Math.PI);
-
-
-          const normalizedAngle =
-            pointerAngle < 0
-              ? pointerAngle + 2 * Math.PI
-              : pointerAngle;
-
-
-          const winnerIndex =
-            Math.floor(
-              normalizedAngle / slice
-            );
-
-
-          const winner =
-            names[winnerIndex];
-
-
-          // ======================================================
-          // DISPLAY WINNER
-          // ======================================================
-
-          result.textContent =
-            `🎉 CLASS MONITOR: ${winner} 🎉`;
-
-          result.classList.add("winner");
-
-
-          spinning = false;
-
-          button.disabled = false;
-
-        }
-
-      }
-
-
-      requestAnimationFrame(animate);
-
-    }
-
-
-    // ============================================================
-    // BUTTON
-    // ============================================================
-
-    document
-      .getElementById("spinButton")
-      .addEventListener("click", spin);
-
-
-    // ============================================================
-    // INITIAL DRAW
-    // ============================================================
-
-    drawWheel();
-
-  </script>
-
+  <script src="script.js"></script>
 </body>
 </html>
